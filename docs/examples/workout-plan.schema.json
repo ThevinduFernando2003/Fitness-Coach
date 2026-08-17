@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fitness-coach.local/schemas/workout-plan.json",
+  "title": "AI Personal Trainer Workout Plan",
+  "description": "Canonical plan format for generate, builder, upload, session engine, and follow-check.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "name", "sessions"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "source": {
+      "type": "string",
+      "enum": ["generated", "uploaded", "built"]
+    },
+    "goal": {
+      "type": "string",
+      "enum": ["consistency", "strength", "fat_loss", "mobility_yoga", "mixed"]
+    },
+    "level": {
+      "type": "string",
+      "enum": ["beginner", "intermediate", "advanced"]
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "sessions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/session" }
+    }
+  },
+  "$defs": {
+    "session": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["day_index", "name", "blocks"],
+      "properties": {
+        "day_index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 6,
+          "description": "0 = Monday through 6 = Sunday"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "blocks": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/block" }
+        }
+      }
+    },
+    "block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exercise_key",
+        "sets",
+        "rest_seconds",
+        "success_metric",
+        "tracking_mode"
+      ],
+      "properties": {
+        "exercise_key": {
+          "type": "string",
+          "description": "Catalog key, e.g. squat, tree, push_up. Unknown keys import as timer_only after confirmation."
+        },
+        "sets": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20
+        },
+        "reps": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 200,
+          "description": "Required when success_metric is reps"
+        },
+        "work_seconds": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3600,
+          "description": "Timed work (AMRAP-style or timer-only exercises)"
+        },
+        "hold_seconds": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 600,
+          "description": "Required when success_metric is hold_seconds"
+        },
+        "rest_seconds": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 600,
+          "description": "Rest after each set except implementation may skip after the last set of the last block"
+        },
+        "success_metric": {
+          "type": "string",
+          "enum": ["reps", "hold_seconds", "work_seconds"]
+        },
+        "tracking_mode": {
+          "type": "string",
+          "enum": ["vision", "timer", "hybrid"],
+          "description": "hybrid = use vision when landmarks are reliable, else timer"
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 500
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "success_metric": { "const": "reps" } }
+          },
+          "then": {
+            "required": ["reps"],
+            "properties": {
+              "reps": { "minimum": 1 }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "success_metric": { "const": "hold_seconds" } }
+          },
+          "then": {
+            "required": ["hold_seconds"],
+            "properties": {
+              "hold_seconds": { "minimum": 1 }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "success_metric": { "const": "work_seconds" } }
+          },
+          "then": {
+            "required": ["work_seconds"],
+            "properties": {
+              "work_seconds": { "minimum": 1 }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

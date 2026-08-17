@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0",
+  "name": "Beginner mixed week (sample)",
+  "source": "generated",
+  "goal": "mixed",
+  "level": "beginner",
+  "notes": "Sample plan used to illustrate rest times, hybrid tracking, and follow-check.",
+  "sessions": [
+    {
+      "day_index": 0,
+      "name": "Monday — Strength + core",
+      "blocks": [
+        {
+          "exercise_key": "squat",
+          "sets": 3,
+          "reps": 8,
+          "rest_seconds": 45,
+          "success_metric": "reps",
+          "tracking_mode": "hybrid",
+          "notes": "Camera 45°. Timer backup if count is lost."
+        },
+        {
+          "exercise_key": "push_up",
+          "sets": 3,
+          "reps": 6,
+          "rest_seconds": 45,
+          "success_metric": "reps",
+          "tracking_mode": "hybrid"
+        },
+        {
+          "exercise_key": "plank",
+          "sets": 2,
+          "hold_seconds": 20,
+          "rest_seconds": 30,
+          "success_metric": "hold_seconds",
+          "tracking_mode": "hybrid"
+        }
+      ]
+    },
+    {
+      "day_index": 2,
+      "name": "Wednesday — Yoga mobility",
+      "blocks": [
+        {
+          "exercise_key": "mountain",
+          "sets": 1,
+          "hold_seconds": 30,
+          "rest_seconds": 10,
+          "success_metric": "hold_seconds",
+          "tracking_mode": "hybrid"
+        },
+        {
+          "exercise_key": "downward_dog",
+          "sets": 1,
+          "hold_seconds": 40,
+          "rest_seconds": 15,
+          "success_metric": "hold_seconds",
+          "tracking_mode": "hybrid"
+        },
+        {
+          "exercise_key": "warrior_ii",
+          "sets": 2,
+          "hold_seconds": 25,
+          "rest_seconds": 15,
+          "success_metric": "hold_seconds",
+          "tracking_mode": "hybrid",
+          "notes": "One set per side."
+        },
+        {
+          "exercise_key": "tree",
+          "sets": 2,
+          "hold_seconds": 20,
+          "rest_seconds": 15,
+          "success_metric": "hold_seconds",
+          "tracking_mode": "hybrid"
+        }
+      ]
+    },
+    {
+      "day_index": 4,
+      "name": "Friday — Timer cardioset (no camera required)",
+      "blocks": [
+        {
+          "exercise_key": "jumping_jack",
+          "sets": 3,
+          "work_seconds": 30,
+          "rest_seconds": 20,
+          "success_metric": "work_seconds",
+          "tracking_mode": "hybrid"
+        },
+        {
+          "exercise_key": "march_in_place",
+          "sets": 2,
+          "work_seconds": 45,
+          "rest_seconds": 20,
+          "success_metric": "work_seconds",
+          "tracking_mode": "timer",
+          "notes": "Not in vision catalog — timer only."
+        }
+      ]
+    }
+  ]
+}
