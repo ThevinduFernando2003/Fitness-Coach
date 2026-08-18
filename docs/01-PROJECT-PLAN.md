@@ -3,7 +3,7 @@
 **Project:** AI Personal Trainer (Fitness-Coach)  
 **Type:** Sixth-semester academic project  
 **Stack:** React, Node.js, computer vision (pose landmarks), timer-backed session engine  
-**Status:** Greenfield (repository currently contains license only)  
+**Status:** v1 implemented (see [04-IMPLEMENTATION-STATUS.md](./04-IMPLEMENTATION-STATUS.md))  
 **Date:** 18 August 2026
 
 ---
