@@ -1,0 +1,21 @@
+{
+  "name": "fitness-coach",
+  "private": true,
+  "workspaces": [
+    "shared",
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently -n server,client -c cyan,magenta \"npm run dev -w server\" \"npm run dev -w client\"",
+    "db:up": "docker compose up -d --wait",
+    "db:migrate": "npm run prisma:migrate -w server",
+    "db:seed": "npm run prisma:seed -w server",
+    "db:setup": "npm run db:up && npm run db:migrate && npm run db:seed",
+    "test": "npm run test -w shared",
+    "build": "npm run build -w client && npm run build -w server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
