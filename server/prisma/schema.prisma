@@ -1,0 +1,189 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum FitnessLevel {
+  beginner
+  intermediate
+  advanced
+}
+
+enum Goal {
+  consistency
+  strength
+  fat_loss
+  mobility_yoga
+  mixed
+}
+
+enum Equipment {
+  none
+  home
+  gym
+}
+
+enum Sex {
+  female
+  male
+  other
+  unspecified
+}
+
+enum PlanSource {
+  generated
+  uploaded
+  built
+}
+
+enum Discipline {
+  yoga
+  gym
+  other
+}
+
+enum TrackingMode {
+  vision
+  timer
+  hybrid
+}
+
+enum SuccessMetric {
+  reps
+  hold_seconds
+  work_seconds
+}
+
+enum RestClass {
+  short
+  ok
+  long
+}
+
+enum SessionStatus {
+  complete
+  abandoned
+}
+
+model User {
+  id                   String    @id @default(cuid())
+  email                String    @unique
+  passwordHash         String
+  displayName          String
+  age                  Int?
+  sex                  Sex       @default(unspecified)
+  heightCm             Float?
+  weightKg             Float?
+  level                FitnessLevel @default(beginner)
+  goal                 Goal      @default(mixed)
+  daysPerWeek          Int       @default(3)
+  durationMin          Int       @default(30)
+  equipment            Equipment @default(none)
+  injuries             String    @default("")
+  disclaimerAcceptedAt DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  plans                Plan[]
+  sessions             WorkoutSession[]
+}
+
+model Exercise {
+  key             String        @id
+  name            String
+  discipline      Discipline
+  trackingMode    TrackingMode
+  successMetric   SuccessMetric
+  met             Float
+  visionSupported Boolean
+  defaultReps     Int           @default(0)
+  defaultHold     Int           @default(0)
+  defaultWork     Int           @default(0)
+  defaultRest     Int           @default(30)
+  cues            String        @default("")
+}
+
+model Plan {
+  id        String       @id @default(cuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  source    PlanSource
+  goal      Goal?
+  level     FitnessLevel?
+  notes     String       @default("")
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  sessions  PlanSession[]
+}
+
+model PlanSession {
+  id       String            @id @default(cuid())
+  planId   String
+  plan     Plan              @relation(fields: [planId], references: [id], onDelete: Cascade)
+  dayIndex Int
+  name     String
+  blocks   PlanBlock[]
+  workouts WorkoutSession[]
+}
+
+model PlanBlock {
+  id            String         @id @default(cuid())
+  sessionId     String
+  session       PlanSession    @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  order         Int
+  exerciseKey   String
+  sets          Int
+  reps          Int            @default(0)
+  workSeconds   Int            @default(0)
+  holdSeconds   Int            @default(0)
+  restSeconds   Int
+  trackingMode  TrackingMode
+  successMetric SuccessMetric
+  notes         String         @default("")
+  results       BlockResult[]
+}
+
+model WorkoutSession {
+  id              String        @id @default(cuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planSessionId   String?
+  planSession     PlanSession?  @relation(fields: [planSessionId], references: [id], onDelete: SetNull)
+  startedAt       DateTime
+  endedAt         DateTime
+  status          SessionStatus
+  complianceScore Float
+  kcalEstimate    Float
+  note            String        @default("")
+  trackingSummary String        @default("")
+  blockResults    BlockResult[]
+}
+
+model BlockResult {
+  id                 String        @id @default(cuid())
+  workoutSessionId   String
+  workout            WorkoutSession @relation(fields: [workoutSessionId], references: [id], onDelete: Cascade)
+  planBlockId        String?
+  planBlock          PlanBlock?    @relation(fields: [planBlockId], references: [id], onDelete: SetNull)
+  exerciseKey        String
+  order              Int
+  actualReps         Int           @default(0)
+  actualWorkSeconds  Int           @default(0)
+  actualHoldSeconds  Int           @default(0)
+  actualRestSeconds  Int           @default(0)
+  restClass          RestClass?
+  trackingModeUsed   TrackingMode
+  skipped            Boolean       @default(false)
+  formScoreAvg       Float?
+  fallbackOccurred   Boolean       @default(false)
+  plannedReps        Int           @default(0)
+  plannedWorkSeconds Int           @default(0)
+  plannedHoldSeconds Int           @default(0)
+  plannedRestSeconds Int           @default(0)
+  plannedSets        Int           @default(1)
+  successMetric      SuccessMetric
+}
